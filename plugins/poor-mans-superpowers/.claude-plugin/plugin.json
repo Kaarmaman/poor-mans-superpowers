@@ -1,0 +1,9 @@
+{
+  "name": "poor-mans-superpowers",
+  "description": "Lean Claude Code workflow for reliable, minimal software delivery",
+  "version": "0.1.0",
+  "author": {
+    "name": "Kaarmaman",
+    "url": "https://github.com/Kaarmaman"
+  }
+}

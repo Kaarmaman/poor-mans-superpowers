@@ -1,0 +1,14 @@
+{
+  "name": "poor-mans-tools",
+  "description": "Lean tools for disciplined AI-assisted software delivery",
+  "owner": {
+    "name": "Kaarmaman"
+  },
+  "plugins": [
+    {
+      "name": "poor-mans-superpowers",
+      "source": "./plugins/poor-mans-superpowers",
+      "description": "Lean Claude Code workflow for requirements, tests, root-cause fixes, review, and delivery"
+    }
+  ]
+}
