@@ -1,9 +1,23 @@
 {
   "name": "poor-mans-superpowers",
-  "description": "Lean Claude Code workflow for reliable, minimal software delivery",
-  "version": "0.1.0",
+  "displayName": "Poor Man's Superpowers",
+  "description": "Lightweight Claude Code workflow for repository-aware requirements, behavior tests, root-cause debugging, code review, and validated software delivery",
+  "version": "0.1.1",
   "author": {
     "name": "Kaarmaman",
     "url": "https://github.com/Kaarmaman"
-  }
+  },
+  "homepage": "https://github.com/Kaarmaman/poor-mans-superpowers",
+  "repository": "https://github.com/Kaarmaman/poor-mans-superpowers",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "skills",
+    "software-engineering",
+    "tdd",
+    "root-cause-debugging",
+    "code-review",
+    "ai-assisted-development"
+  ]
 }

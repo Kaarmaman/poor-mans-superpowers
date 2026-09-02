@@ -1,14 +1,29 @@
 {
   "name": "poor-mans-tools",
-  "description": "Lean tools for disciplined AI-assisted software delivery",
+  "description": "Lean Claude Code plugins for repository-aware planning, behavior tests, root-cause debugging, diff review, and validated delivery",
   "owner": {
-    "name": "Kaarmaman"
+    "name": "Kaarmaman",
+    "url": "https://github.com/Kaarmaman"
   },
   "plugins": [
     {
       "name": "poor-mans-superpowers",
+      "displayName": "Poor Man's Superpowers",
       "source": "./plugins/poor-mans-superpowers",
-      "description": "Lean Claude Code workflow for requirements, tests, root-cause fixes, review, and delivery"
+      "description": "Lightweight Claude Code workflow for requirements, behavior tests, root-cause debugging, code review, and software delivery",
+      "homepage": "https://github.com/Kaarmaman/poor-mans-superpowers",
+      "repository": "https://github.com/Kaarmaman/poor-mans-superpowers",
+      "license": "MIT",
+      "keywords": [
+        "claude-code",
+        "plugin",
+        "skills",
+        "software-engineering",
+        "tdd",
+        "root-cause-debugging",
+        "code-review",
+        "ai-assisted-development"
+      ]
     }
   ]
 }
