@@ -1,0 +1,36 @@
+name: Validate plugin
+
+on:
+  push:
+    paths:
+      - '.claude-plugin/**'
+      - 'plugins/**'
+      - 'README.md'
+      - '.github/workflows/validate-plugin.yml'
+  pull_request:
+    paths:
+      - '.claude-plugin/**'
+      - 'plugins/**'
+      - 'README.md'
+      - '.github/workflows/validate-plugin.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Claude Code
+        run: npm install --global @anthropic-ai/claude-code
+
+      - name: Validate plugin manifests
+        run: claude plugin validate . --strict
