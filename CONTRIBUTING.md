@@ -19,7 +19,11 @@ without first opening an issue to discuss the trade-off.
    ```
 
 4. Update `README.md` when installation or invocation changes.
-5. Update `plugin.json` version and `CHANGELOG.md` for released behavior.
+5. For workflow changes, check both default invocation and explicit
+   `/poor-mans-superpowers -astra` behavior.
+6. Keep ASTRA mode native and independent; do not add an
+   `astra-orchestrator` dependency.
+7. Update `plugin.json` version and `CHANGELOG.md` for released behavior.
 
 Open an issue first for larger workflow or metadata changes. Pull requests
 should explain what changed and how it was validated.

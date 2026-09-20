@@ -1,6 +1,6 @@
 ---
 name: poor-mans-superpowers
-description: "Run a lean implementation and delivery workflow: clarify scope and requirements, use Beads when initialized, fingerprint relevant baselines, sequence behavior tests red-green, require root-cause fixes for failures, review every final diff, and run /simplify before a requested commit. Use only when explicitly invoked; not for explanations, planning-only work, or documentation-only edits."
+description: "Run a lean implementation and delivery workflow, or an explicit -astra native subagent workflow: clarify scope and requirements, use Beads when initialized, fingerprint relevant baselines, sequence behavior tests red-green, require root-cause fixes for failures, review every final diff, and run /simplify before a requested commit. Use only when explicitly invoked; not for explanations, planning-only work, or documentation-only edits."
 disable-model-invocation: true
 ---
 
@@ -9,6 +9,124 @@ disable-model-invocation: true
 Use this skill as a lightweight quality loop for a requested implementation,
 bug fix, or delivery. It is smaller than a full agentic framework: inspect only
 what is relevant, make one coherent change, and verify changed behaviour.
+
+Invocation modes:
+
+- `/poor-mans-superpowers` runs the default lean, single-agent workflow. Do not
+  delegate unless the request or a failure requires it.
+- `/poor-mans-superpowers -astra <request>` explicitly enables ASTRA mode. Treat
+  `-astra` as a mode flag, remove it from the task, and use the native Claude
+  Code subagent workflow below. Do not activate ASTRA mode from ordinary task
+  wording or from an unqualified invocation.
+
+ASTRA mode is self-contained. Use Claude Code's native `Task`/subagent
+capability; never invoke, install, or depend on `astra-orchestrator`.
+
+## ASTRA mode
+
+ASTRA mode uses the same orchestrator topology and role profile as
+`astra-orchestrator`, implemented natively in this skill:
+
+- root: GPT-5.6 Luna at `xhigh` reasoning
+- explorer: GPT-5.6 Luna at `xhigh` reasoning
+- worker: GPT-5.6 Luna at `xhigh` reasoning
+- tester: GPT-5.6 Luna at `xhigh` reasoning
+- researcher: GPT-5.6 Luna at `xhigh` reasoning
+- reviewer: GPT-6 Astra at `low` reasoning
+
+Use native subagent model selection with these profiles when available. Do not
+silently substitute another model. Preserve the root session model/configuration
+when the host does not permit changing it; report unavailable requested profiles
+or native delegation rather than claiming they ran.
+
+### Delegation gate
+
+Before substantive repository work, classify the task as `root-only` or
+`delegated`:
+
+- Keep `root-only` for work that is genuinely small, localized, and gains
+  nothing from independent exploration, implementation, testing, research, or
+  review.
+- Use `delegated` when work spans files or components, has independent
+  workstreams, needs repository exploration, benefits from separate
+  implementation and verification contexts, crosses components, needs current
+  external facts, or benefits materially from independent review.
+- An explicit `-astra` request is a request for this mode. Do not mechanically
+  spawn agents for a trivial root-only task, but do not simulate delegation
+  when the task meets the delegated criteria.
+
+If a task is delegated, create at least one real native subagent before doing
+that delegated work in the root. If native delegation is unavailable or fails,
+report the exact failure; do not claim a subagent ran. Continue directly only
+when reasonable, and clearly record that fallback.
+
+### Root responsibilities
+
+Root agent owns goal understanding, architecture, decomposition, parallelism,
+subagent contracts, conflict resolution, integration, final review, verification,
+and user-facing result. Subagents provide bounded evidence or implementation;
+they do not own overall direction.
+
+### Spawn policy and contracts
+
+For every delegated task:
+
+1. Use native `Task`/subagent calls, with descriptive role/task names and the
+   requested model profile.
+2. Give each subagent a bounded contract containing objective, scope, context,
+   constraints, deliverable, and acceptance criteria.
+3. Retain task identity and wait for required subagents before final synthesis.
+4. Use one writer per file or subsystem. Keep explorers, researchers, testers,
+   and reviewers read-only unless their contract explicitly assigns test edits.
+5. Run independent tasks in parallel; serialize dependent work as
+   explore -> decide -> implement -> test -> review -> fix -> final verify.
+
+Role selection:
+
+- `explorer`: map repository, trace execution/data flow, locate symbols/tests,
+  inspect dependencies and configuration. Do not edit.
+- `worker`: implement a bounded change in explicitly owned files.
+- `tester`: reproduce, run focused checks, validate regression behavior, and add
+  tests only when assigned. Do not change production code.
+- `researcher`: verify current or version-specific behavior using authoritative
+  sources and return compatibility implications.
+- `reviewer`: independently check correctness, security, regressions, missing
+  tests, and architectural consistency. Report findings; do not make unrelated
+  edits.
+
+Use Luna for routine execution. Use Astra only for the reviewer by default.
+Escalate another role only when the user asks, Luna reports a genuine reasoning
+blocker, or root identifies a high-risk architectural/security review need.
+
+### ASTRA workflow
+
+For non-trivial implementation work, use this sequence when each role materially
+helps:
+
+1. Spawn one or more Luna explorers when repository understanding is needed.
+2. Root chooses implementation direction from their evidence.
+3. Spawn Luna worker(s) with non-overlapping ownership.
+4. Spawn a Luna tester for reproduction and focused validation.
+5. Spawn the Astra reviewer for every code or research-logic change before the
+   final response. Skip only trivial no-change work.
+6. Resolve material findings, then run final verification in root.
+
+For cross-component debugging, collect independent exploration and reproduction
+first; root selects one root-cause hypothesis; worker implements; tester reruns
+the original failure; reviewer checks the fix. For external or version-specific
+questions, use a Luna researcher and require primary sources where possible.
+
+### ASTRA failure and completion gates
+
+If a subagent fails, inspect why and decide whether to retry, narrow, reassign,
+or handle it in root. Do not silently ignore failure or claim incomplete work
+completed. Before final response, confirm every required subagent was spawned,
+completed or explicitly failed, material findings were integrated, conflicts were
+resolved, required verification ran, and no required agent remains active.
+
+All normal invariants, branch rules, root-cause gates, tests, and completion
+gates in this skill apply to ASTRA mode. Root performs branch synchronization;
+subagents must not independently pull, switch branches, or rebase.
 
 ## Ponytail companion
 
@@ -159,8 +277,9 @@ Before declaring completion, with or without a commit:
 
 ## Keep the loop cheap and reportable
 
-- Make one coherent change. Do not spawn extra agents, generate lengthy plans,
-  or run unrelated audits unless the request or a failure requires it.
+- Make one coherent change. In default mode, do not spawn extra agents, generate
+  lengthy plans, or run unrelated audits unless the request or a failure requires
+  it. In explicit ASTRA mode, follow the delegation gate and workflow above.
 - Finish with a compact record: clarified outcome/design, baseline fingerprint,
   RED/GREEN evidence (or why RED was infeasible), root-cause attempts and any
   circuit-breaker stop, tests/quality gates, final diff review, delivery and

@@ -10,7 +10,7 @@
       "name": "poor-mans-superpowers",
       "displayName": "Poor Man's Superpowers",
       "source": "./plugins/poor-mans-superpowers",
-      "description": "Lightweight Claude Code workflow for requirements, behavior tests, root-cause debugging, code review, and software delivery",
+      "description": "Lightweight Claude Code workflow for requirements, behavior tests, root-cause debugging, code review, software delivery, and optional native ASTRA orchestration",
       "homepage": "https://github.com/Kaarmaman/poor-mans-superpowers",
       "repository": "https://github.com/Kaarmaman/poor-mans-superpowers",
       "license": "MIT",
@@ -22,7 +22,10 @@
         "tdd",
         "root-cause-debugging",
         "code-review",
-        "ai-assisted-development"
+        "ai-assisted-development",
+        "multi-agent",
+        "orchestration",
+        "astra"
       ]
     }
   ]

@@ -1,7 +1,7 @@
 {
   "name": "poor-mans-superpowers",
   "displayName": "Poor Man's Superpowers",
-  "description": "Lightweight Claude Code workflow for repository-aware requirements, behavior tests, root-cause debugging, code review, and validated software delivery",
+  "description": "Lightweight Claude Code workflow for repository-aware requirements, behavior tests, root-cause debugging, code review, validated delivery, and optional native ASTRA orchestration",
   "version": "0.1.1",
   "author": {
     "name": "Kaarmaman",
@@ -18,6 +18,9 @@
     "tdd",
     "root-cause-debugging",
     "code-review",
-    "ai-assisted-development"
+    "ai-assisted-development",
+    "multi-agent",
+    "orchestration",
+    "astra"
   ]
 }

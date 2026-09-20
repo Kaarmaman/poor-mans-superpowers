@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Opt-in `/poor-mans-superpowers -astra` mode using native Claude Code
+  subagents with the Astra orchestrator role and model workflow.
+- Documentation and metadata for independent ASTRA orchestration.
+
 ## [0.1.1] - 2026-09-02
 
 ### Added
