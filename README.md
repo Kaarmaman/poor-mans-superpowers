@@ -12,7 +12,8 @@ servers, network calls, or project runtime dependencies.
 
 Independent, lightweight alternative to [obra/superpowers](https://github.com/obra/superpowers)
 for users who want explicit, prompt-only quality gates without a full agentic
-workflow.
+workflow by default. An explicit `-astra` option enables native Claude Code
+subagent orchestration without requiring another plugin.
 
 ## Best for
 
@@ -35,6 +36,7 @@ workflow.
 4. Traces failures to root cause instead of random-patching symptoms.
 5. Reviews final diff, status, and validation before completion.
 6. Uses Beads only when an existing repository already has Beads initialized.
+7. Offers opt-in ASTRA orchestration through native Claude Code subagents.
 
 ## Example workflow
 
@@ -67,7 +69,7 @@ claude plugin install poor-mans-superpowers@poor-mans-tools --scope project
 
 ### Invoke
 
-Use canonical namespaced invocation:
+Use canonical namespaced invocation for default lean mode:
 
 ```text
 /poor-mans-superpowers:poor-mans-superpowers
@@ -78,6 +80,17 @@ Some Claude Code versions also expose this bare alias:
 ```text
 /poor-mans-superpowers
 ```
+
+Opt into native ASTRA orchestration by passing `-astra` with request:
+
+```text
+/poor-mans-superpowers -astra Fix token expiry handling and add a regression test.
+```
+
+ASTRA mode mirrors `astra-orchestrator` roles and model profile while using
+Claude Code's native subagents: Luna at `xhigh` for root, explorer, worker,
+tester, and researcher; Astra at `low` for reviewer. `astra-orchestrator` is
+not required.
 
 ### Validate, update, or remove
 
@@ -106,6 +119,7 @@ claude plugin uninstall poor-mans-superpowers@poor-mans-tools --scope user
 - [`bd` / Beads](https://github.com/steveyegge/beads) — persistent issue
   tracking in repositories that already use it.
 - `/simplify` — final simplification review when commit readiness is requested.
+- `astra-orchestrator` — not required; `-astra` mode is self-contained.
 
 ## Project links
 
@@ -127,4 +141,5 @@ for development and validation steps.
 [Superpowers](https://github.com/obra/superpowers) provides a broader agentic
 skills framework. This plugin targets users who want a smaller Claude Code
 workflow with the same core concerns: requirements, tests, debugging, review,
-and delivery.
+and delivery. Use explicit `-astra` when native multi-agent orchestration is
+wanted; it does not load or depend on `astra-orchestrator`.
