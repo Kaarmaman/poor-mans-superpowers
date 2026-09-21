@@ -87,18 +87,67 @@ Opt into native ASTRA orchestration by passing `-astra` with request:
 /poor-mans-superpowers -astra Fix token expiry handling and add a regression test.
 ```
 
-ASTRA mode mirrors `astra-orchestrator` roles and model profile while using
-Claude Code's native subagents: Luna at `xhigh` for root, explorer, worker,
-tester, and researcher; Astra at `low` for reviewer. `astra-orchestrator` is
-not required.
+ASTRA mode is self-contained and uses Claude Code's native subagents:
+GPT-6 Astra at `medium` for root/orchestrator; GPT-5.6 Luna at `xhigh` for
+explorer, worker, tester, and researcher; and GPT-6 Astra at `low` for the
+independent reviewer. Root owns architecture, decomposition, integration,
+conflict resolution, final verification, and the user-facing response.
+
+Keep at most 3 concurrently active Luna subagents per task/session. Explorer,
+worker, tester, and researcher calls count toward this limit. A fourth Luna
+subagent must wait until one of the 3 active Luna subagents finishes. The Astra
+reviewer does not count. This is expressed through native Task/subagent
+orchestration, with no scheduler or runtime dependency.
+
+Astra-medium root requires launching the Claude Code session with that
+model/profile; ASTRA mode cannot change an already-running root model. If native
+model selection is unavailable, report that limitation instead of claiming the
+requested Astra or Luna profile ran. `astra-orchestrator` is not required.
+
+### Instruction loading and token cost
+
+```text
+skills/poor-mans-superpowers/
+├── SKILL.md                 # shared quality gates + mode routing
+└── astra/
+    ├── WORKFLOW.md          # opt-in root orchestration + profile table
+    └── roles/
+        ├── explorer.md
+        ├── worker.md
+        ├── tester.md
+        ├── researcher.md
+        └── reviewer.md
+```
+
+Default invocation reads only `SKILL.md`: no ASTRA topology, model profiles,
+concurrency rules, or role contracts. Explicit `-astra` additionally reads
+`astra/WORKFLOW.md`; root loads a role contract only when assigning that role.
+Both modes use the same quality gates, without copying them into two workflows.
+These supporting files are not separately registered skills or native agents.
+
+Children receive their role contract, bounded task context, and applicable
+quality gates—not every role or the whole root transcript when avoidable.
+Root retains architecture, integration, branch synchronization, and completion
+ownership. Model profiles and the three-Luna concurrency limit are unchanged.
+
+This reduces default prompt content, not necessarily total ASTRA task cost.
+A small routing instruction remains; zero ASTRA-related tokens is not possible
+while retaining one command with a mode flag. Files already read remain in
+session context, and host context inheritance or eager loading can reduce the
+savings. File separation is instruction-driven, not a runtime isolation guard;
+exact token counts depend on the model tokenizer and host behavior.
 
 ### Validate, update, or remove
 
 From a checkout of this repository, validate plugin structure with:
 
 ```bash
-claude plugin validate .
+claude plugin validate . --strict
+node tests/skill-structure.mjs
 ```
+
+The Node check validates prompt structure and supporting links; it does not
+simulate agent decisions or verify host-level token isolation.
 
 Update a user-scoped installation:
 

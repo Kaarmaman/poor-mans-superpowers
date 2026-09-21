@@ -6,12 +6,14 @@ on:
       - '.claude-plugin/**'
       - 'plugins/**'
       - 'README.md'
+      - 'tests/**'
       - '.github/workflows/validate-plugin.yml'
   pull_request:
     paths:
       - '.claude-plugin/**'
       - 'plugins/**'
       - 'README.md'
+      - 'tests/**'
       - '.github/workflows/validate-plugin.yml'
 
 permissions:
@@ -31,6 +33,9 @@ jobs:
 
       - name: Install Claude Code
         run: npm install --global @anthropic-ai/claude-code
+
+      - name: Check skill loading structure
+        run: node tests/skill-structure.mjs
 
       - name: Validate plugin manifests
         run: claude plugin validate . --strict
