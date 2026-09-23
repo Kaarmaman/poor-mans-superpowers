@@ -90,10 +90,12 @@ Opt into native ASTRA orchestration by passing `-astra` with request:
 ASTRA mode is self-contained and uses Claude Code's native subagents: the
 latest available Astra model at `medium` for root/orchestrator and `low` for
 the independent reviewer, and GPT-6 Luna at `xhigh` for explorer, worker,
-tester, and researcher. Luna roles are registered plugin agents with explicit
-model and effort settings, so they do not inherit those from the invoking
-session. Root owns architecture, decomposition, integration, conflict
-resolution, final verification, and the user-facing response.
+tester, and researcher. Luna roles and the reviewer are registered plugin agents
+with explicit model and effort settings, so they do not inherit those from the
+invoking session. Reviewer uses `gpt-6-astra` at `low`; update that explicit ID
+when a newer Astra release becomes available. Root owns architecture,
+decomposition, integration, conflict resolution, final verification, and the
+user-facing response.
 
 Keep at most 3 concurrently active Luna subagents per task/session. Explorer,
 worker, tester, and researcher calls count toward this limit. A fourth Luna
@@ -111,22 +113,22 @@ that limitation instead of claiming the requested Astra or Luna profile ran.
 
 ```text
 plugins/poor-mans-superpowers/
-├── agents/astra/            # registered Luna subagents; GPT-6 Luna + xhigh
+├── agents/astra/            # registered subagents; explicit model + effort
 │   ├── explorer.md
 │   ├── worker.md
 │   ├── tester.md
-│   └── researcher.md
+│   ├── researcher.md
+│   └── reviewer.md          # gpt-6-astra + low
 └── skills/poor-mans-superpowers/
     ├── SKILL.md             # shared quality gates + mode routing
     └── astra/
-        ├── WORKFLOW.md      # opt-in root orchestration
-        └── roles/reviewer.md
+        └── WORKFLOW.md      # opt-in root orchestration
 ```
 
 Default invocation reads only `SKILL.md`: no ASTRA topology or concurrency
-rules. Explicit `-astra` additionally reads `astra/WORKFLOW.md`; Luna agent
-prompts load when those registered agents run, while root loads the reviewer
-contract only when assigning that role. Both modes use the same quality gates,
+rules. Explicit `-astra` additionally reads `astra/WORKFLOW.md`; Luna and reviewer
+prompts load when their registered agents run. Reviewer dispatch uses
+`poor-mans-superpowers:astra:reviewer`. Both modes use the same quality gates,
 without copying them into two workflows.
 
 Children receive their role prompt, bounded task context, and applicable quality

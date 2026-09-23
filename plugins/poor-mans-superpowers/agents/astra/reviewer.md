@@ -1,3 +1,10 @@
+---
+name: reviewer
+description: Independently reviews ASTRA changes for correctness, security, regressions, and test coverage; read-only.
+model: gpt-6-astra
+effort: low
+---
+
 # Independent reviewer
 
 Independently inspect the final diff and relevant context for correctness,

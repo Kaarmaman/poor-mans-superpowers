@@ -22,12 +22,15 @@ they do not own overall direction.
 | worker | GPT-6 Luna | `xhigh` | `poor-mans-superpowers:astra:worker` |
 | tester | GPT-6 Luna | `xhigh` | `poor-mans-superpowers:astra:tester` |
 | researcher | GPT-6 Luna | `xhigh` | `poor-mans-superpowers:astra:researcher` |
-| independent reviewer | latest available Astra model | `low` | [roles/reviewer.md](roles/reviewer.md) |
+| independent reviewer | gpt-6-astra | `low` | `poor-mans-superpowers:astra:reviewer` |
 
 Launch the Claude Code session with the latest available Astra model at
 `medium` (or its matching model/profile) to get that root model. Invoke Luna
-roles using their registered plugin-scoped agent names above. Their agent
-frontmatter explicitly sets `GPT-6 Luna` and `xhigh`; do not use a generic
+roles and the reviewer using their registered plugin-scoped agent names above.
+Luna frontmatter explicitly sets `GPT-6 Luna` and `xhigh`; reviewer frontmatter
+sets `gpt-6-astra` and `low`, without inheriting either from root. Keep the
+reviewer's model ID current with the latest available Astra release; this
+explicit ID does not automatically select future releases. Do not use a generic
 subagent type or pass a per-invocation model override, which takes precedence
 over agent configuration. If an agent is unavailable or the host, environment,
 or organization policy downgrades its model/effort, report the actual result;
@@ -64,13 +67,12 @@ clearly record that fallback.
 
 ## Spawn contracts and context budget
 
-Luna roles are registered plugin agents under `agents/astra/`; invoke them by
-the scoped names in the table instead of loading their prompt files manually.
-Load [roles/reviewer.md](roles/reviewer.md) only when assigning the independent
-reviewer. If that contract cannot be read, report the missing file and stop
-that handoff rather than inventing its contract.
+Luna roles are registered plugin agents under `agents/astra/`, as is the
+independent reviewer. Invoke them by the scoped names in the table instead of
+loading their prompt files manually. If the reviewer agent is unavailable,
+report the failure and stop that handoff rather than using a generic substitute.
 
-1. Invoke the registered Luna agent type from the table without a model
+1. Invoke the registered agent type from the table without a model
 override. Give it a descriptive task name and bounded contract.
 2. Give each child its role instructions plus a bounded contract: objective,
    scope/owned files, relevant context, constraints, deliverable, acceptance
@@ -102,8 +104,8 @@ For non-trivial implementation, use each role when it materially helps:
 2. Root chooses implementation direction from their evidence.
 3. Spawn Luna worker(s) with non-overlapping ownership.
 4. Spawn a Luna tester for reproduction and focused validation.
-5. Spawn the Astra reviewer for every code or research-logic change before the
-   final response. Skip only trivial no-change work.
+5. Spawn `poor-mans-superpowers:astra:reviewer` for every code or research-logic
+   change before the final response. Skip only trivial no-change work.
 6. Resolve material findings, then run final verification in root.
 
 For cross-component debugging, collect independent exploration and reproduction

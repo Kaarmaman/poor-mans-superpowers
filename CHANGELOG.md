@@ -10,6 +10,9 @@
 
 ### Changed
 
+- Register the independent reviewer as `poor-mans-superpowers:astra:reviewer`
+  with explicit `gpt-6-astra` model and `low` effort instead of a prompt-only
+  contract; dispatch it by scoped agent name without inheriting root settings.
 - Moved ASTRA orchestration into an opt-in supporting workflow and five
   on-demand role contracts; default PMSP loads only shared gates and routing.
 - Scoped child handoffs to their role, task, and applicable quality gates;
