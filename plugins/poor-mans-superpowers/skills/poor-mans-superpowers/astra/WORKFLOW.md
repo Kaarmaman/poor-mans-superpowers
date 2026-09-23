@@ -15,20 +15,23 @@ contracts, conflict resolution, integration, final verification, and the
 user-facing response. Children provide bounded evidence or implementation;
 they do not own overall direction.
 
-| Role | Requested model | Reasoning | Contract file (load only when assigning role) |
+| Role | Requested model | Effort | Agent |
 | --- | --- | --- | --- |
-| root/orchestrator | GPT-6 Astra | `medium` | This file |
-| explorer | GPT-5.6 Luna | `xhigh` | [roles/explorer.md](roles/explorer.md) |
-| worker | GPT-5.6 Luna | `xhigh` | [roles/worker.md](roles/worker.md) |
-| tester | GPT-5.6 Luna | `xhigh` | [roles/tester.md](roles/tester.md) |
-| researcher | GPT-5.6 Luna | `xhigh` | [roles/researcher.md](roles/researcher.md) |
-| independent reviewer | GPT-6 Astra | `low` | [roles/reviewer.md](roles/reviewer.md) |
+| root/orchestrator | latest available Astra model | `medium` | Root session |
+| explorer | GPT-6 Luna | `xhigh` | `poor-mans-superpowers:astra:explorer` |
+| worker | GPT-6 Luna | `xhigh` | `poor-mans-superpowers:astra:worker` |
+| tester | GPT-6 Luna | `xhigh` | `poor-mans-superpowers:astra:tester` |
+| researcher | GPT-6 Luna | `xhigh` | `poor-mans-superpowers:astra:researcher` |
+| independent reviewer | latest available Astra model | `low` | [roles/reviewer.md](roles/reviewer.md) |
 
-Launch the Claude Code session with GPT-6 Astra at `medium` (or its matching
-model/profile) to get that root model. Request the listed native profiles when
-the host exposes model selection. Do not silently substitute models or reasoning
-levels. If selection is unavailable, report the limitation and any actual
-fallback; never claim Astra or Luna ran when its profile was unavailable.
+Launch the Claude Code session with the latest available Astra model at
+`medium` (or its matching model/profile) to get that root model. Invoke Luna
+roles using their registered plugin-scoped agent names above. Their agent
+frontmatter explicitly sets `GPT-6 Luna` and `xhigh`; do not use a generic
+subagent type or pass a per-invocation model override, which takes precedence
+over agent configuration. If an agent is unavailable or the host, environment,
+or organization policy downgrades its model/effort, report the actual result;
+never claim the requested profile ran when it did not.
 Escalate another role only when the user asks, Luna reports a genuine reasoning
 blocker, or root identifies a high-risk architectural/security review need.
 
@@ -61,14 +64,14 @@ clearly record that fallback.
 
 ## Spawn contracts and context budget
 
-For each selected role, load only its contract file from the table above.
-Do not read every role file in advance. Reuse a role already loaded in context.
-If a selected role file cannot be read, report the missing file and stop that
-handoff rather than inventing its contract.
-These are supporting instructions, not globally registered agents or separate
-skills; use their contents with native subagent calls.
+Luna roles are registered plugin agents under `agents/astra/`; invoke them by
+the scoped names in the table instead of loading their prompt files manually.
+Load [roles/reviewer.md](roles/reviewer.md) only when assigning the independent
+reviewer. If that contract cannot be read, report the missing file and stop
+that handoff rather than inventing its contract.
 
-1. Use descriptive role/task names and the requested profile.
+1. Invoke the registered Luna agent type from the table without a model
+override. Give it a descriptive task name and bounded contract.
 2. Give each child its role instructions plus a bounded contract: objective,
    scope/owned files, relevant context, constraints, deliverable, acceptance
    criteria, and applicable shared quality gates. Do not pass the full PMSP

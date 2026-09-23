@@ -14,14 +14,14 @@
   on-demand role contracts; default PMSP loads only shared gates and routing.
 - Scoped child handoffs to their role, task, and applicable quality gates;
   documented context/token limitations and added structural validation.
-- Set ASTRA root/orchestrator to GPT-6 Astra at `medium` reasoning; explorer,
-  worker, tester, and researcher use GPT-5.6 Luna at `xhigh`; independent
-  reviewer uses GPT-6 Astra at `low`.
+- Configure ASTRA root/orchestrator (`medium`) and reviewer (`low`) for the
+  latest available Astra model; register Luna child roles as plugin agents
+  with explicit GPT-6 Luna model and `xhigh` effort.
 - Limited ASTRA mode to 3 concurrently active Luna subagents per task/session;
   a fourth Luna subagent waits, while the Astra reviewer is excluded.
 - Documented that Astra-medium root requires launching Claude Code with that
-  model/profile, and that unavailable native model selection must be reported
-  rather than claimed.
+  model/profile, and that unavailable or downgraded subagent configuration must
+  be reported rather than claimed.
 
 ## [0.1.1] - 2026-09-02
 

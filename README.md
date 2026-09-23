@@ -87,11 +87,13 @@ Opt into native ASTRA orchestration by passing `-astra` with request:
 /poor-mans-superpowers -astra Fix token expiry handling and add a regression test.
 ```
 
-ASTRA mode is self-contained and uses Claude Code's native subagents:
-GPT-6 Astra at `medium` for root/orchestrator; GPT-5.6 Luna at `xhigh` for
-explorer, worker, tester, and researcher; and GPT-6 Astra at `low` for the
-independent reviewer. Root owns architecture, decomposition, integration,
-conflict resolution, final verification, and the user-facing response.
+ASTRA mode is self-contained and uses Claude Code's native subagents: the
+latest available Astra model at `medium` for root/orchestrator and `low` for
+the independent reviewer, and GPT-6 Luna at `xhigh` for explorer, worker,
+tester, and researcher. Luna roles are registered plugin agents with explicit
+model and effort settings, so they do not inherit those from the invoking
+session. Root owns architecture, decomposition, integration, conflict
+resolution, final verification, and the user-facing response.
 
 Keep at most 3 concurrently active Luna subagents per task/session. Explorer,
 worker, tester, and researcher calls count toward this limit. A fourth Luna
@@ -99,36 +101,38 @@ subagent must wait until one of the 3 active Luna subagents finishes. The Astra
 reviewer does not count. This is expressed through native Task/subagent
 orchestration, with no scheduler or runtime dependency.
 
-Astra-medium root requires launching the Claude Code session with that
-model/profile; ASTRA mode cannot change an already-running root model. If native
-model selection is unavailable, report that limitation instead of claiming the
-requested Astra or Luna profile ran. `astra-orchestrator` is not required.
+Using the latest Astra model at `medium` for root requires launching the
+Claude Code session with that model/profile; ASTRA mode cannot change an
+already-running root model. If native model selection is unavailable, report
+that limitation instead of claiming the requested Astra or Luna profile ran.
+`astra-orchestrator` is not required.
 
 ### Instruction loading and token cost
 
 ```text
-skills/poor-mans-superpowers/
-├── SKILL.md                 # shared quality gates + mode routing
-└── astra/
-    ├── WORKFLOW.md          # opt-in root orchestration + profile table
-    └── roles/
-        ├── explorer.md
-        ├── worker.md
-        ├── tester.md
-        ├── researcher.md
-        └── reviewer.md
+plugins/poor-mans-superpowers/
+├── agents/astra/            # registered Luna subagents; GPT-6 Luna + xhigh
+│   ├── explorer.md
+│   ├── worker.md
+│   ├── tester.md
+│   └── researcher.md
+└── skills/poor-mans-superpowers/
+    ├── SKILL.md             # shared quality gates + mode routing
+    └── astra/
+        ├── WORKFLOW.md      # opt-in root orchestration
+        └── roles/reviewer.md
 ```
 
-Default invocation reads only `SKILL.md`: no ASTRA topology, model profiles,
-concurrency rules, or role contracts. Explicit `-astra` additionally reads
-`astra/WORKFLOW.md`; root loads a role contract only when assigning that role.
-Both modes use the same quality gates, without copying them into two workflows.
-These supporting files are not separately registered skills or native agents.
+Default invocation reads only `SKILL.md`: no ASTRA topology or concurrency
+rules. Explicit `-astra` additionally reads `astra/WORKFLOW.md`; Luna agent
+prompts load when those registered agents run, while root loads the reviewer
+contract only when assigning that role. Both modes use the same quality gates,
+without copying them into two workflows.
 
-Children receive their role contract, bounded task context, and applicable
-quality gates—not every role or the whole root transcript when avoidable.
-Root retains architecture, integration, branch synchronization, and completion
-ownership. Model profiles and the three-Luna concurrency limit are unchanged.
+Children receive their role prompt, bounded task context, and applicable quality
+gates—not every role or the whole root transcript when avoidable. Root retains
+architecture, integration, branch synchronization, and completion ownership.
+Luna model/effort settings and the three-agent concurrency limit are explicit.
 
 This reduces default prompt content, not necessarily total ASTRA task cost.
 A small routing instruction remains; zero ASTRA-related tokens is not possible

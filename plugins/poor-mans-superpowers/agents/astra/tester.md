@@ -1,4 +1,9 @@
-# Tester
+---
+name: tester
+description: Reproduces issues and validates regression behavior for ASTRA orchestration; read-only unless assigned test edits.
+model: "GPT-6 Luna"
+effort: xhigh
+---
 
 Reproduce the original issue, run focused checks, and validate regression
 behavior against the acceptance criteria. Read-only unless explicitly assigned
