@@ -1,125 +1,49 @@
 # ASTRA orchestration
 
-Read only for an explicit `-astra` invocation. Apply alongside the shared
-quality gates in `../SKILL.md`; do not reload that file if already in context.
-Resolve paths below relative to this file, not the user's repository.
+This opt-in mode adds bounded native subagent work to the shared quality gates
+in `../SKILL.md`. Root owns user intent, architecture, decomposition,
+coordination, integration, final verification, and the response. Children never
+own overall direction or delivery.
 
-Use Claude Code's native `Task`/subagent capability; never invoke, install, or
-depend on `astra-orchestrator`. This instruction-only plugin cannot change the
-model of an already-running root session.
+## Select one harness adapter
 
-## Root responsibilities and profiles
+Identify the active host from the invocation and available host context. Do not
+guess from installed CLIs or tools. Load exactly one matching adapter:
 
-Root owns goal understanding, architecture, decomposition, parallelism, bounded
-contracts, conflict resolution, integration, final verification, and the
-user-facing response. Children provide bounded evidence or implementation;
-they do not own overall direction.
+| Active harness | Adapter |
+| --- | --- |
+| Claude Code | [harnesses/claude-code.md](harnesses/claude-code.md) |
+| GitHub Copilot CLI | [harnesses/copilot-cli.md](harnesses/copilot-cli.md) |
+| Codex CLI | [harnesses/codex-cli.md](harnesses/codex-cli.md) |
+| Pi | [harnesses/pi.md](harnesses/pi.md) |
+| Unknown, unsupported, or uncertain | [harnesses/default.md](harnesses/default.md) |
 
-| Role | Requested model | Effort | Agent |
-| --- | --- | --- | --- |
-| root/orchestrator | latest available Astra model | `medium` | Root session |
-| explorer | GPT-6 Luna | `xhigh` | `poor-mans-superpowers:astra:explorer` |
-| worker | GPT-6 Luna | `xhigh` | `poor-mans-superpowers:astra:worker` |
-| tester | GPT-6 Luna | `xhigh` | `poor-mans-superpowers:astra:tester` |
-| researcher | GPT-6 Luna | `xhigh` | `poor-mans-superpowers:astra:researcher` |
-| independent reviewer | gpt-6-astra | `low` | `poor-mans-superpowers:astra:reviewer` |
+Load only the selected adapter; do not read any other adapter. Each adapter
+owns its host's agent names, tools, setup, and capability limits. Never reuse a
+host-specific tool or agent profile in another harness. Claude plugin agent
+profiles are Claude-only.
 
-Launch the Claude Code session with the latest available Astra model at
-`medium` (or its matching model/profile) to get that root model. Invoke Luna
-roles and the reviewer using their registered plugin-scoped agent names above.
-Luna frontmatter explicitly sets `GPT-6 Luna` and `xhigh`; reviewer frontmatter
-sets `gpt-6-astra` and `low`, without inheriting either from root. Keep the
-reviewer's model ID current with the latest available Astra release; this
-explicit ID does not automatically select future releases. Do not use a generic
-subagent type or pass a per-invocation model override, which takes precedence
-over agent configuration. If an agent is unavailable or the host, environment,
-or organization policy downgrades its model/effort, report the actual result;
-never claim the requested profile ran when it did not.
-Escalate another role only when the user asks, Luna reports a genuine reasoning
-blocker, or root identifies a high-risk architectural/security review need.
+## Shared orchestration contract
 
-## Luna concurrency
+- Use delegation only in this explicit mode. Keep assignments narrow and
+  independent; parallelize only work that can safely proceed at once.
+- For non-trivial changes, explore before deciding, then implement, test, and
+  independently review. Root chooses direction and integrates results.
+- Keep one writer per file or worktree. Explorers, testers, and reviewers stay
+  read-only unless their adapter explicitly says otherwise.
+- Respect host concurrency limits and user constraints. Do not add a scheduler,
+  runtime, package, or persistent agent configuration for one task.
+- Give each child a bounded objective, scope, repository/ref, edit boundary,
+  acceptance criteria, validation command, and concise output contract.
+- Preserve unrelated changes. Trace unexpected failures to root cause. Track
+  failed fix attempts across children and stop after three.
+- If a required host capability is missing, report it and stop the ASTRA
+  handoff. Do not silently switch harnesses, install extensions, or pretend a
+  child ran. The shared single-agent workflow remains available separately.
 
-Keep at most 3 concurrently active Luna subagents per ASTRA task/session.
-Explorer, worker, tester, and researcher calls all count. A fourth Luna child
-must wait until one of the 3 finishes. The independent Astra reviewer does not
-count and may run concurrently. Enforce through native orchestration; do not add
-a scheduler, queue, dependency, or runtime component.
+## Completion
 
-## Delegation gate
-
-Before substantive repository work, classify the task as `root-only` or
-`delegated`:
-
-- Keep `root-only` for genuinely small, localized work that gains nothing from
-  independent exploration, implementation, testing, research, or review.
-- Use `delegated` when work spans files or components, has independent
-  workstreams, needs repository exploration, benefits from separate execution
-  and verification contexts, crosses components, needs current external facts,
-  or benefits materially from independent review.
-- Explicit `-astra` enables this mode. Do not mechanically spawn children for
-  trivial root-only work, but do not simulate required delegation.
-
-For delegated work, create at least one real native child before doing that
-work in root. If native delegation is unavailable or fails, report the exact
-failure; never claim a child ran. Continue directly only when reasonable and
-clearly record that fallback.
-
-## Spawn contracts and context budget
-
-Luna roles are registered plugin agents under `agents/astra/`, as is the
-independent reviewer. Invoke them by the scoped names in the table instead of
-loading their prompt files manually. If the reviewer agent is unavailable,
-report the failure and stop that handoff rather than using a generic substitute.
-
-1. Invoke the registered agent type from the table without a model
-override. Give it a descriptive task name and bounded contract.
-2. Give each child its role instructions plus a bounded contract: objective,
-   scope/owned files, relevant context, constraints, deliverable, acceptance
-   criteria, and applicable shared quality gates. Do not pass the full PMSP
-   skill, this orchestration file, other role files, or entire root transcript
-   when a focused handoff suffices. Prefer fresh context where supported;
-   report inherited-context limitations rather than promising token isolation.
-3. Always require preservation of unrelated changes, root-cause investigation
-   of unexpected failures, accurate check results, and escalation of blockers
-   or scope expansion. Root tracks unsuccessful fix attempts across children;
-   after three, stop and reassess with the user—never reset the count by spawning
-   a new child.
-4. Retain task identity and wait for required children before final synthesis.
-5. Use one writer per file/subsystem. Explorers, researchers, testers, and
-   reviewers are read-only unless their contract explicitly assigns test edits.
-6. Run independent work in parallel within the Luna cap. Serialize dependencies:
-   explore -> decide -> implement -> test -> review -> fix -> final verify.
-7. Require concise evidence: conclusions, relevant paths/symbols, changes,
-   commands/results, and risks/blockers. Avoid raw logs unless needed to diagnose.
-
-Root performs branch synchronization. Children must not independently pull,
-switch branches, rebase, commit, or stage changes.
-
-## Workflow
-
-For non-trivial implementation, use each role when it materially helps:
-
-1. Spawn Luna explorer(s) when repository understanding is needed.
-2. Root chooses implementation direction from their evidence.
-3. Spawn Luna worker(s) with non-overlapping ownership.
-4. Spawn a Luna tester for reproduction and focused validation.
-5. Spawn `poor-mans-superpowers:astra:reviewer` for every code or research-logic
-   change before the final response. Skip only trivial no-change work.
-6. Resolve material findings, then run final verification in root.
-
-For cross-component debugging, collect independent exploration and reproduction
-first; root selects one root-cause hypothesis; worker implements; tester reruns
-the original failure; reviewer checks the fix. For external or version-specific
-questions, use a Luna researcher and require primary sources where possible.
-
-## Failure and completion gates
-
-If a child fails, inspect why and decide whether to retry, narrow, reassign, or
-handle it in root. Do not silently ignore failure or claim incomplete work
-completed. Before final response, confirm every required child was spawned,
-completed or explicitly failed, material findings were integrated, conflicts
-were resolved, required verification ran, and no required child remains active.
-
-All shared invariants, branch rules, root-cause gates, tests, and completion
-gates in `../SKILL.md` still apply. Root owns their enforcement across children.
+Root checks acceptance, test meaning and results, final diff/status, and
+`git diff --check`. Report the selected adapter, exact checks, unavailable
+capabilities, and any work left incomplete. Do not claim model or host behavior
+that was not verified.

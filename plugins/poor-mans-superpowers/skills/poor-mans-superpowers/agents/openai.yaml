@@ -1,6 +1,6 @@
 interface:
   display_name: "Poor Man's Superpowers"
-  short_description: "Portable quality gates with optional ASTRA orchestration"
+  short_description: "Portable quality gates with optional native ASTRA orchestration"
   default_prompt: "Use $poor-mans-superpowers when explicitly requested. Add -astra for native subagent orchestration supported by the active harness."
 policy:
   allow_implicit_invocation: false

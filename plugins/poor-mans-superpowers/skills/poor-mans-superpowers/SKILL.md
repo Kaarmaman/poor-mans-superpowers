@@ -17,7 +17,9 @@ what is relevant, make one coherent change, and verify changed behaviour.
   unless the request or a failure requires it.
 - With `/poor-mans-superpowers -astra <request>` (including its namespaced form),
   remove the flag from the task and read [astra/WORKFLOW.md](astra/WORKFLOW.md)
-  before substantive work. Apply it alongside the shared workflow below.
+  before substantive work. It routes to exactly one adapter for the active
+  harness; never load instructions or invoke tools for other harnesses. Unknown
+  harnesses use the generic fallback.
 - Ordinary task wording or quoted examples do not enable ASTRA mode. Resolve
   supporting-file paths relative to this skill directory, not the project cwd.
   If the selected workflow cannot be read, report the missing file and stop;
