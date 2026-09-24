@@ -1,7 +1,7 @@
 {
   "name": "poor-mans-superpowers",
   "displayName": "Poor Man's Superpowers",
-  "description": "Lightweight Claude Code workflow for repository-aware requirements, behavior tests, root-cause debugging, code review, validated delivery, and optional native ASTRA orchestration",
+  "description": "Portable repository-aware quality workflow for Claude Code, Copilot CLI, Codex CLI, and Pi, with isolated optional ASTRA adapters",
   "version": "0.1.1",
   "author": {
     "name": "Kaarmaman",
@@ -12,6 +12,10 @@
   "license": "MIT",
   "keywords": [
     "claude-code",
+    "copilot-cli",
+    "codex-cli",
+    "pi",
+    "agent-skills",
     "plugin",
     "skills",
     "software-engineering",

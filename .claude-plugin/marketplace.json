@@ -1,6 +1,6 @@
 {
   "name": "poor-mans-tools",
-  "description": "Lean Claude Code plugins for repository-aware planning, behavior tests, root-cause debugging, diff review, and validated delivery",
+  "description": "Portable repository-aware quality workflow for Claude Code, Copilot CLI, Codex CLI, and Pi",
   "owner": {
     "name": "Kaarmaman",
     "url": "https://github.com/Kaarmaman"
@@ -10,12 +10,16 @@
       "name": "poor-mans-superpowers",
       "displayName": "Poor Man's Superpowers",
       "source": "./plugins/poor-mans-superpowers",
-      "description": "Lightweight Claude Code workflow for requirements, behavior tests, root-cause debugging, code review, software delivery, and optional native ASTRA orchestration",
+      "description": "Portable repository-aware quality workflow for Claude Code, Copilot CLI, Codex CLI, and Pi, with isolated optional ASTRA adapters",
       "homepage": "https://github.com/Kaarmaman/poor-mans-superpowers",
       "repository": "https://github.com/Kaarmaman/poor-mans-superpowers",
       "license": "MIT",
       "keywords": [
         "claude-code",
+        "copilot-cli",
+        "codex-cli",
+        "pi",
+        "agent-skills",
         "plugin",
         "skills",
         "software-engineering",
