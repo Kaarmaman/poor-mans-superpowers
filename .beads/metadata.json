@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "poor_mans_superpowers",
+  "project_id": "833384f3-f3e9-49de-8cac-ed3d3d5ba4e9"
+}
