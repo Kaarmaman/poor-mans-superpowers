@@ -6,6 +6,7 @@ const skill = new URL('plugins/poor-mans-superpowers/skills/poor-mans-superpower
 const read = (path) => readFileSync(new URL(path, skill), 'utf8');
 const core = read('SKILL.md');
 const workflow = read('astra/WORKFLOW.md');
+const solWorkflow = read('sol/WORKFLOW.md');
 const readme = readFileSync(new URL('README.md', project), 'utf8');
 const adapterNames = ['claude-code', 'copilot-cli', 'codex-cli', 'pi', 'default'];
 for (const name of adapterNames) {
@@ -20,11 +21,23 @@ assert.match(core, /disable-model-invocation: true/);
 assert.match(core, /Without an explicit `-astra` invocation flag/);
 assert.match(core, /Do not read `astra\/WORKFLOW\.md` or any ASTRA role files/);
 assert.match(core, /read \[astra\/WORKFLOW\.md\]\(astra\/WORKFLOW\.md\)/);
+assert.match(core, /read \[sol\/WORKFLOW\.md\]\(sol\/WORKFLOW\.md\)/);
+assert.match(core, /-sol/);
 assert.doesNotMatch(core, /GPT-\d|roles\/|## ASTRA mode|Copilot CLI|Codex CLI|Pi harness/);
 assert.ok(core.length < 12000, 'Keep default entry lean; move optional instructions out');
 
+// Sol mode keeps shared workflow single-agent and requests current Sol at high effort.
+assert.match(solWorkflow, /latest available Sol model/i);
+assert.match(solWorkflow, /GPT-6\.2 Sol/);
+assert.match(solWorkflow, /gpt-6\.2-sol/);
+assert.match(solWorkflow, /high/i);
+assert.match(solWorkflow, /later|newer/i);
+assert.doesNotMatch(solWorkflow, /astra\/WORKFLOW|harnesses\//);
+
 // ASTRA chooses one host adapter; unrecognized hosts use a safe generic path.
 assert.match(workflow, /load exactly one matching adapter/i);
+assert.match(workflow, /GPT-6\.2 Astra/);
+assert.match(workflow, /gpt-6\.2-astra/);
 assert.match(workflow, /Do not read.*other adapter/i);
 for (const name of adapterNames) {
   assert.ok(workflow.includes(`harnesses/${name}.md`), `Route to ${name} adapter`);
@@ -37,6 +50,8 @@ assert.match(adapters['claude-code'], /Claude Code/);
 assert.match(adapters['claude-code'], /Task/);
 assert.match(adapters['claude-code'], /poor-mans-superpowers:astra:reviewer/);
 assert.match(adapters['claude-code'], /GPT-6 Luna/);
+assert.match(adapters['claude-code'], /GPT-6\.2 Astra/);
+assert.match(adapters['claude-code'], /gpt-6\.2-astra/);
 assert.doesNotMatch(adapters['claude-code'], /pi install npm:pi-subagents|\/fleet|spawn_agent/);
 
 assert.match(adapters['copilot-cli'], /Copilot CLI/);
@@ -70,6 +85,9 @@ assert.doesNotMatch(readme, /pi install --local|pi list|Restart Pi after install
 assert.match(readme, /subagents_enable/);
 assert.match(readme, /next\s+model request/i);
 assert.match(readme, /`\/subagents-doctor`/);
+assert.match(readme, /-sol/);
+assert.match(readme, /GPT-6\.2 Sol/);
+assert.match(readme, /GPT-6\.2 Astra/);
 assert.match(readme, /Delegate in plain language/);
 assert.match(readme, /`\/subagents-fleet`/);
 assert.match(readme, /Codex CLI \| Native subagents if exposed by installed CLI/);
@@ -95,7 +113,7 @@ for (const role of lunaRoles) {
 
 const reviewer = readFileSync(new URL('reviewer.md', agents), 'utf8');
 assert.match(reviewer, /^---\r?\nname: reviewer\r?\n/);
-assert.match(reviewer, /^model: gpt-6-astra$/m);
+assert.match(reviewer, /^model: gpt-6\.2-astra$/m);
 assert.match(reviewer, /^effort: low$/m);
 assert.doesNotMatch(reviewer, /SKILL\.md|WORKFLOW\.md/);
 assert.doesNotMatch(workflow, /roles\/reviewer\.md/);
@@ -103,8 +121,9 @@ assert.doesNotMatch(workflow, /roles\/reviewer\.md/);
 // Codex needs its own opt-in policy; other hosts can ignore this sidecar.
 const codexMetadata = read('agents/openai.yaml');
 assert.match(codexMetadata, /allow_implicit_invocation: false/);
+assert.match(codexMetadata, /-sol/);
 
-for (const path of ['SKILL.md', 'astra/WORKFLOW.md', ...adapterNames.map((name) => `astra/harnesses/${name}.md`)]) {
+for (const path of ['SKILL.md', 'sol/WORKFLOW.md', 'astra/WORKFLOW.md', ...adapterNames.map((name) => `astra/harnesses/${name}.md`)]) {
   const text = read(path);
   assert.ok(text.trim(), `${path} must not be empty`);
   for (const [, target] of text.matchAll(/\[[^\]]+\]\(([^)]+\.md)\)/g)) {

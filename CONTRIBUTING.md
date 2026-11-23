@@ -26,9 +26,9 @@ runtime dependencies without first opening an issue to discuss the trade-off.
    claude plugin validate . --strict
    ```
 
-7. Check both default invocation and explicit `-astra` routing. Manually test
-   each changed host adapter when that harness is available; report untested
-   hosts.
+7. Check default invocation plus explicit `-sol` and `-astra` routing. Manually
+   test each changed host adapter when that harness is available; report
+   untested hosts.
 8. Update `README.md` when installation, invocation, or harness support changes.
    Update `plugin.json` version and `CHANGELOG.md` for released behavior.
 

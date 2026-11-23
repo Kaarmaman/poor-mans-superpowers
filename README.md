@@ -12,8 +12,10 @@ final diff review, and validated delivery. It adds no project runtime
 requirements, hooks, or MCP servers.
 
 Default use stays single-agent and loads only the shared workflow. Explicit
-`-astra` opts into native subagent orchestration; it loads instructions for the
-active harness only. Unknown harnesses get a safe single-agent fallback.
+`-sol` requests the latest Sol model at high effort (currently GPT-6.2 Sol),
+while `-astra` opts into native subagent orchestration with the latest Astra
+model (currently GPT-6.2 Astra); both report any host-side model fallback.
+Unknown harnesses get a safe single-agent fallback.
 
 ## Best for
 
@@ -42,6 +44,12 @@ Add `-astra` only when native subagent orchestration is wanted:
 
 ```text
 /poor-mans-superpowers:poor-mans-superpowers -astra Fix token expiry handling and add a regression test.
+```
+
+Use `-sol` for the single-agent workflow with latest Sol at high effort:
+
+```text
+/poor-mans-superpowers:poor-mans-superpowers -sol Fix token expiry handling and add a regression test.
 ```
 
 The Claude plugin includes scoped ASTRA agent profiles. The skill itself also
@@ -97,10 +105,11 @@ single-agent workflow still works. See the [Pi subagents adapter](plugins/poor-m
 
 ## Harness isolation
 
-The shared `SKILL.md` contains the default quality loop. `-astra` loads
-`astra/WORKFLOW.md`, which selects exactly one adapter: Claude Code, Copilot
-CLI, Codex CLI, Pi, or the generic fallback. A harness never loads another
-harness's tools or agent profiles. See the [adapter directory](plugins/poor-mans-superpowers/skills/poor-mans-superpowers/astra/harnesses/).
+The shared `SKILL.md` contains the default quality loop. `-sol` loads
+`sol/WORKFLOW.md` and stays single-agent. `-astra` loads `astra/WORKFLOW.md`,
+which selects exactly one adapter: Claude Code, Copilot CLI, Codex CLI, Pi, or
+the generic fallback. A harness never loads another harness's tools or agent
+profiles. See the [adapter directory](plugins/poor-mans-superpowers/skills/poor-mans-superpowers/astra/harnesses/).
 
 | Harness | Native delegation | PMSP setup |
 | --- | --- | --- |
@@ -131,13 +140,15 @@ plugins/poor-mans-superpowers/
 └── skills/poor-mans-superpowers/
     ├── SKILL.md              # portable shared workflow and routing
     ├── agents/openai.yaml    # Codex explicit-invocation policy
+    ├── sol/WORKFLOW.md       # single-agent Sol model contract
     └── astra/
         ├── WORKFLOW.md       # ASTRA router and shared contract
         └── harnesses/        # isolated host adapters + generic fallback
 ```
 
-The default invocation reads only `SKILL.md`. ASTRA adapter instructions load
-only after explicit `-astra`; the selected adapter alone loads for that host.
+The default invocation reads only `SKILL.md`. Sol instructions load only after
+explicit `-sol`; ASTRA adapter instructions load only after explicit `-astra`,
+and the selected adapter alone loads for that host.
 
 ## Validate, update, or remove
 

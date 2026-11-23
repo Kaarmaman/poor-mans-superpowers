@@ -1,7 +1,7 @@
 ---
 name: reviewer
 description: Independently reviews ASTRA changes for correctness, security, regressions, and test coverage; read-only.
-model: gpt-6-astra
+model: gpt-6.2-astra
 effort: low
 ---
 

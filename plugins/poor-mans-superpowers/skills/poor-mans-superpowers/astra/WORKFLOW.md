@@ -25,6 +25,10 @@ profiles are Claude-only.
 
 ## Shared orchestration contract
 
+- Use the latest available Astra model for the root when the host supports
+  model selection; the current reference is GPT-6.2 Astra (`gpt-6.2-astra`).
+  Report any model or effort downgrade rather than claiming the requested
+  profile ran.
 - Use delegation only in this explicit mode. Keep assignments narrow and
   independent; parallelize only work that can safely proceed at once.
 - For non-trivial changes, explore before deciding, then implement, test, and

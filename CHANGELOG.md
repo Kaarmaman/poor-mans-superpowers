@@ -4,6 +4,8 @@
 
 ### Added
 
+- Opt-in `/poor-mans-superpowers -sol` mode using the latest Sol model at high
+  effort, currently GPT-6.2 Sol.
 - Opt-in `/poor-mans-superpowers -astra` orchestration using the active
   harness's delegation support; Pi requires separately installed
   `pi-subagents`.
@@ -19,8 +21,10 @@
 ### Changed
 
 - Register the independent reviewer as `poor-mans-superpowers:astra:reviewer`
-  with explicit `gpt-6-astra` model and `low` effort instead of a prompt-only
+  with explicit `gpt-6.2-astra` model and `low` effort instead of a prompt-only
   contract; dispatch it by scoped agent name without inheriting root settings.
+- Updated ASTRA model guidance to use the latest Astra release, currently
+  GPT-6.2 Astra.
 - Moved shared ASTRA orchestration into a harness-neutral router; each harness
   loads only its own adapter and role/tool guidance.
 - Bounded child handoffs by role, task, edit boundary, acceptance, and

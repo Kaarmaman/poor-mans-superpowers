@@ -1,6 +1,6 @@
 ---
 name: poor-mans-superpowers
-description: "Run a lean implementation and delivery workflow, or an explicit -astra native subagent workflow: clarify scope and requirements, use Beads when initialized, fingerprint relevant baselines, sequence behavior tests red-green, require root-cause fixes for failures, review every final diff, and run /simplify before a requested commit. Use only when explicitly invoked; not for explanations, planning-only work, or documentation-only edits."
+description: "Run a lean implementation and delivery workflow, an explicit -sol high-effort model workflow, or an explicit -astra native subagent workflow: clarify scope and requirements, use Beads when initialized, fingerprint relevant baselines, sequence behavior tests red-green, require root-cause fixes for failures, review every final diff, and run /simplify before a requested commit. Use only when explicitly invoked; not for explanations, planning-only work, or documentation-only edits."
 disable-model-invocation: true
 ---
 
@@ -12,15 +12,20 @@ what is relevant, make one coherent change, and verify changed behaviour.
 
 ## Mode routing
 
-- Without an explicit `-astra` invocation flag, follow only the shared workflow
-  below. Do not read `astra/WORKFLOW.md` or any ASTRA role files. Do not delegate
-  unless the request or a failure requires it.
+- Without an explicit `-astra` invocation flag or `-sol` option, follow only the
+  shared workflow below. Do not read `astra/WORKFLOW.md` or any ASTRA role files.
+  Do not delegate unless the request or a failure requires it.
+- With `/poor-mans-superpowers -sol <request>` (including its namespaced form),
+  remove the flag from the task and read [sol/WORKFLOW.md](sol/WORKFLOW.md)
+  before substantive work. It requests the latest Sol model at high effort and
+  keeps execution single-agent; do not load ASTRA instructions.
 - With `/poor-mans-superpowers -astra <request>` (including its namespaced form),
   remove the flag from the task and read [astra/WORKFLOW.md](astra/WORKFLOW.md)
   before substantive work. It routes to exactly one adapter for the active
   harness; never load instructions or invoke tools for other harnesses. Unknown
   harnesses use the generic fallback.
-- Ordinary task wording or quoted examples do not enable ASTRA mode. Resolve
+- Do not combine `-sol` and `-astra`; report the ambiguous mode and stop.
+- Ordinary task wording or quoted examples do not enable either mode. Resolve
   supporting-file paths relative to this skill directory, not the project cwd.
   If the selected workflow cannot be read, report the missing file and stop;
   do not silently run a different mode.

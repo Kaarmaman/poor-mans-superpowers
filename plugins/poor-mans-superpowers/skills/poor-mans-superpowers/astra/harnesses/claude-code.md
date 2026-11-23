@@ -15,9 +15,11 @@ name:
 - `poor-mans-superpowers:astra:reviewer`
 
 The four Luna roles use GPT-6 Luna at `xhigh`; the independent reviewer uses
-`gpt-6-astra` at `low`. Keep no more than three Luna children active at once.
-The root model comes from the Claude Code session and cannot be changed by this
-skill. Report actual model/effort when unavailable or downgraded.
+`gpt-6.2-astra` at `low`. The root should use the latest available Astra model
+at `medium`, currently GPT-6.2 Astra (`gpt-6.2-astra`). Keep no more than three
+Luna children active at once. The root model comes from the Claude Code session
+and cannot be changed by this skill. If a later Astra release is available, use
+it. Report actual model/effort when unavailable or downgraded.
 
 If only the portable skill is installed and these plugin agents are absent,
 use Claude Code's native `Task` capability with bounded role prompts. Do not
